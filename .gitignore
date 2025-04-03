@@ -1,0 +1,25 @@
+# Object and build directories
+**/obj/
+**/generated/
+
+# Output binaries and stripped output
+**/*.release.out
+**/*.release.strip.out
+
+# Appimages
+**/*.release.appimage
+**/*.release.appimage_xip
+**/*.release.appimage.signed
+**/*.release.appimage.hs
+**/*.release.appimage.hs_fs
+
+# RPRC binaries
+**/*.release.rprc
+**/*.release.rprc_xip
+
+# Firmware output files
+j722s-c71_0-fw
+j722s-c71_1-fw
+j722s-main-r5f0_0-fw
+j722s-mcu-r5f0_0-fw
+j722s-wake-r5f0_0-fw
