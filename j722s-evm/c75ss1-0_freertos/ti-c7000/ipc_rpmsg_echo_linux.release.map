@@ -1,7 +1,7 @@
 ******************************************************************************
                      C7x Linker Unix v4.1.0                    
 ******************************************************************************
->> Linked Thu Apr  3 23:34:49 2025
+>> Linked Thu Apr 10 23:08:01 2025
 
 OUTPUT FILE NAME:   <ipc_rpmsg_echo_linux.release.out>
 ENTRY POINT SYMBOL: "_c_int00_secure"  address: 0000a4600000

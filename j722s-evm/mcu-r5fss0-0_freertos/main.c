@@ -45,11 +45,11 @@ StackType_t gMainTaskStack[MAIN_TASK_SIZE] __attribute__((aligned(32)));
 StaticTask_t gMainTaskObj;
 TaskHandle_t gMainTask;
 
-void ipc_rpmsg_echo_main(void *args);
+void task_init(void *args);
 
 void freertos_main(void *args)
 {
-    ipc_rpmsg_echo_main(NULL);
+    task_init(NULL);
 
     vTaskDelete(NULL);
 }
@@ -74,10 +74,6 @@ int main()
     /* Start the scheduler to start the tasks executing. */
     vTaskStartScheduler();
 
-    /* The following line should never be reached because vTaskStartScheduler()
-    will only return if there was not enough FreeRTOS heap memory available to
-    create the Idle and (if configured) Timer tasks.  Heap management, and
-    techniques for trapping heap exhaustion, are described in the book text. */
     DebugP_assertNoLog(0);
 
     return 0;

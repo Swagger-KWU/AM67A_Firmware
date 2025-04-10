@@ -38,6 +38,7 @@
 #include "ti_board_config.h"
 #include "FreeRTOS.h"
 #include "task.h"
+#include "dsplib.h"
 
 #define MAIN_TASK_PRI  (configMAX_PRIORITIES-1)
 

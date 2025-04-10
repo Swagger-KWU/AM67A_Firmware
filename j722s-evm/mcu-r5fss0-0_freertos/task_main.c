@@ -31,9 +31,11 @@
  */
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 #include <inttypes.h>
-#include <kernel/dpl/ClockP.h>
 #include <kernel/dpl/DebugP.h>
+#include <kernel/dpl/ClockP.h>
+#include <kernel/dpl/CacheP.h>
 #include <drivers/soc.h>
 #include "ti_drivers_config.h" 
 #include "ti_drivers_open_close.h"
@@ -50,12 +52,95 @@ StackType_t deta10FilterStack[MAIN_TASK_SIZE] __attribute__((aligned(32)));
 StaticTask_t ebimuRecvTaskObj, deta10RecvTaskObj, ebimuFilterTaskObj, deta10FilterTaskObj;
 TaskHandle_t ebimuRecvTask, deta10RecvTask, ebimuFilterTask, deta10FilterTask;
 
-void ebimu_recv_main(void *args)
+const char* commands[7] = {
+    "<soc2>",   // HEX 출력
+    "<sof1>",   // Euler Angles
+    "<sog1>",   // Gyro
+    "<soa2>",   // Linear Accel (Local)
+    "<sod1>",   // Distance
+    "<sots1>",  // Timestamp
+    "<sor10>"   // 100Hz 출력
+};
+
+#pragma pack(push, 1)
+typedef struct {
+    uint16_t sop;        // 0x5555
+
+    // Euler angles
+    int16_t roll;
+    int16_t pitch;
+    int16_t yaw;
+
+    // Gyroscope
+    int16_t gx;
+    int16_t gy;
+    int16_t gz;
+
+    // Accelerometer (Local)
+    int16_t ax;
+    int16_t ay;
+    int16_t az;
+
+    // Distance (Local)
+    int16_t dx;
+    int16_t dy;
+    int16_t dz;
+
+    // Timestamp
+    uint16_t timestamp;
+
+    // Checksum
+    uint16_t checksum;
+} EBIMU_Packet;
+#pragma pack(pop)
+
+
+void uartISR()
 {
+
+}
+
+bool validate_checksum(const EBIMU_Packet* pkt) {
+    const uint8_t* ptr = (const uint8_t*)pkt;
+    uint16_t sum = 0;
+    for (int i = 0; i < 28; i++) {  // checksum 제외 28바이트만 더함
+        sum += ptr[i];
+    }
+    return (sum == pkt->checksum);
+}
+
+void ebimu_recv_main(void *args)
+{      
+    // UART_Transaction trans;
+    // UART_Transaction_init(&trans);
+
+    // trans.buf = commands;
+    // trans.count = sizeof(commands);
+
+    // CacheP_wb((void *)trans.buf, trans.count, CacheP_TYPE_ALL);
+    // UART_write(gUartHandle[CONFIG_UART0], &trans);
+
+    // trans.buf   = (uint16_t *)0xA7000000;
+    // trans.count = (30U);
+
+    EBIMU_Packet* pkt = (EBIMU_Packet*)0xA7000000;
 
     while(1)
     {
+        //CacheP_wbInv((void *)trans.buf, (30U), CacheP_TYPE_ALL);
+        //UART_read(gUartHandle[CONFIG_UART0], &trans);
         
+        if(validate_checksum(pkt)) {
+            float roll  = pkt->roll / 100.0f;
+            float gx    = pkt->gx   / 10.0f;
+            float ax    = pkt->ax   / 1000.0f;
+            float dx    = pkt->dx   / 1000.0f;
+            uint16_t ts = pkt->timestamp;
+
+            DebugP_log("Roll: %f, Gyro: %f, Accel: %f, Distance: %f, Timestamp: %u\n", roll, gx, ax, dx, ts);
+        }
+        else
+            DebugP_log("Checksum error\n");
     }
 
     vTaskDelete(NULL);
@@ -146,8 +231,6 @@ void task_create()
 
 void task_init(void *args)
 {
-    int32_t status;
-
     Drivers_open();
     Board_driversOpen();
 

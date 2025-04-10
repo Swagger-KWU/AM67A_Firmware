@@ -6,6 +6,26 @@ export MCU_PLUS_SDK_PATH?=$(abspath ../../../../../ti-firmware-builder-j722s-evm
 include $(MCU_PLUS_SDK_PATH)/imports.mak
 include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
 
+DSPLIB_BASE := $(MCU_PLUS_SDK_PATH)/../dsplib
+DSPLIB_INC := $(DSPLIB_BASE)/src
+DSPLIB_LIB := $(DSPLIB_BASE)/lib/Release
+
+FFTLIB_BASE := $(MCU_PLUS_SDK_PATH)/../fftlib
+FFTLIB_INC := $(FFTLIB_BASE)/src
+FFTLIB_LIB := $(FFTLIB_BASE)/lib/Release
+
+MATHLIB_BASE := $(MCU_PLUS_SDK_PATH)/../mathlib
+MATHLIB_INC := $(MATHLIB_BASE)/src
+MATHLIB_LIB := $(MATHLIB_BASE)/lib/Release
+
+MMALIB_BASE := $(MCU_PLUS_SDK_PATH)/../mmalib_10_01_00_05
+MMALIB_INC := $(MMALIB_BASE)/ti/mmalib/src
+MMALIB_LIB := $(MMALIB_BASE)/lib/C7524/release
+
+VXLIB_BASE := $(MCU_PLUS_SDK_PATH)/../vxlib_10_01_00_02
+VXLIB_INC := $(VXLIB_BASE)/src
+VXLIB_LIB := $(VXLIB_BASE)/lib/Release
+
 CG_TOOL_ROOT=$(CGT_TI_C7000_PATH)
 
 CC=$(CG_TOOL_ROOT)/bin/cl7x
@@ -63,6 +83,11 @@ INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/j722s/c75x \
 	-I${MCU_PLUS_SDK_PATH}/examples/drivers/ipc/ipc_rpmsg_echo_linux \
 	-Igenerated \
+	-I$(DSPLIB_INC) \
+	-I$(FFTLIB_INC) \
+	-I$(MATHLIB_INC) \
+	-I$(MMALIB_INC) \
+	-I$(VXLIB_INC) \
 
 DEFINES_common := \
 	-DSOC_J722S \
@@ -80,11 +105,11 @@ CFLAGS_common := \
 	--endian=little \
 	--disable_inlining \
 	-ea.se71 \
-	--emit_warnings_as_errors \
 	--diag_suppress=770 \
 	--diag_suppress=69 \
 	--diag_suppress=70 \
 	--advice:performance=none \
+	#--emit_warnings_as_errors
 
 CFLAGS_debug := \
 	-Dxdc_target_name__=C71 \
@@ -106,22 +131,32 @@ LIBS_PATH_common = \
 	-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	-i${MCU_PLUS_SDK_PATH}/source/board/lib \
 	-i${CG_TOOL_ROOT}/lib \
+	-i$(DSPLIB_LIB) \
+	-i$(FFTLIB_LIB) \
+	-i$(MATHLIB_LIB) \
+	-i$(MMALIB_LIB) \
+	-i$(VXLIB_LIB) \
 
 LIBS_common = \
 	-lfreertos.j722s.c75x.ti-c7000.${ConfigName}.lib \
 	-ldrivers.j722s.c75ss0-0.ti-c7000.${ConfigName}.lib \
 	-llibc.a \
+	-lDSPLIB_C7524.lib \
+	-lFFTLIB_C7524.lib \
+	-lMATHLIB_C7524.lib \
+	-lmmalib_C7524.lib \
+	-lVXLIB_C7524.lib \
 
 LFLAGS_common = \
 	--silicon_version=7524 \
 	-z \
-	--emit_warnings_as_errors \
 	--diag_suppress=10063 \
 	--ram_model \
 	--warn_sections \
 	-q \
 	-x \
 	 \
+	#--emit_warnings_as_errors
 
 
 LIBS_NAME = \
@@ -134,6 +169,11 @@ LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	${MCU_PLUS_SDK_PATH}/source/board/lib \
 	${CG_TOOL_ROOT}/lib \
+	$(DSPLIB_LIB) \
+	$(FFTLIB_LIB) \
+	$(MATHLIB_LIB) \
+	$(MMALIB_LIB) \
+	$(VXLIB_LIB) \
 
 FILES := $(FILES_common) $(FILES_$(PROFILE))
 ASMFILES := $(ASMFILES_common) $(ASMFILES_$(PROFILE))

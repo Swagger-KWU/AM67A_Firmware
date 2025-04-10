@@ -1,7 +1,7 @@
 ******************************************************************************
             TI ARM Clang Linker Unix v3.2.2                    
 ******************************************************************************
->> Linked Wed Mar 19 20:17:56 2025
+>> Linked Sun Apr  6 02:12:39 2025
 
 OUTPUT FILE NAME:   <ipc_rpmsg_echo_linux.release.out>
 ENTRY POINT SYMBOL: "_self_reset_start"  address: a022c8c8

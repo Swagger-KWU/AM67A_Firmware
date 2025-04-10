@@ -1,6 +1,9 @@
 {
     "files.associations": {
-        "ti_drivers_config.h": "c"
+        "ti_drivers_config.h": "c",
+        "inttypes.h": "c",
+        "bitset": "c",
+        "chrono": "c"
     },
     "ros.distro": "humble"
 }
