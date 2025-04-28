@@ -76,5 +76,9 @@ int main()
 
     DebugP_assertNoLog(0);
 
+    // Board_driversClose();
+    // /* We dont close drivers since threads are running in background */
+    // Drivers_close();
+
     return 0;
 }

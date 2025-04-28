@@ -43,12 +43,15 @@ debug_log.enableLogZoneError              = false;
 debug_log.enableCssLog                    = false;
 debug_log.enableUartLog                   = true;
 debug_log.uartLog.$name                   = "CONFIG_UART0";
-debug_log.uartLog.readCallbackFxn         = "uartISR";
 debug_log.uartLog.useMcuDomainPeripherals = false;
 debug_log.uartLog.intrEnable              = "DMA";
+debug_log.uartLog.UART.$assign            = "USART1";
+debug_log.uartLog.UART.RXD.$assign        = "MCASP0_AFSR";
+debug_log.uartLog.UART.TXD.$assign        = "MCASP0_ACLKR";
 
 udma1.$name                  = "CONFIG_UDMA0";
 debug_log.uartLog.udmaDriver = udma1;
+udma1.instance               = "PKTDMA_0";
 
 mpu_armv71.size         = 31;
 mpu_armv71.attributes   = "Device";
@@ -93,12 +96,3 @@ mpu_armv79.size         = 20;
 mpu_armv79.allowExecute = false;
 mpu_armv79.baseAddr     = 0xA1100000;
 mpu_armv79.$name        = "RESOURCE_TABLE_AND_TRACE";
-
-/**
- * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
- * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
- * re-solve from scratch.
- */
-debug_log.uartLog.UART.$suggestSolution     = "USART1";
-debug_log.uartLog.UART.RXD.$suggestSolution = "I2C1_SCL";
-debug_log.uartLog.UART.TXD.$suggestSolution = "I2C1_SDA";
